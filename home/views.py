@@ -21,3 +21,5 @@ def resque_sign(request):
     return render(request,'resque_sign.html')
 def resque_login(request):
     return render(request,'resque_login.html')
+def resque_dash(request):
+    return render(request,'resque_dash.html')
