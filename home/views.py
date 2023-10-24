@@ -15,6 +15,8 @@ def home(request):
     return render(request, 'index.html', context)
 def parent_sign(request):
     return render(request,'parent_sign.html')
+def parent_login(request):
+    return render(request,'parent_login.html')
 def resque_sign(request):
     return render(request,'resque_sign.html')
 def resque_login(request):
