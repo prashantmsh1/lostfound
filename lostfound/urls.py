@@ -26,6 +26,7 @@ urlpatterns = [
      path('',home,name="home"),
      path('parent_sign/',parent_sign,name="parent_sign"),
      path('resque_sign/',resque_sign,name="resque_sign"),
+     path('resque_login/',resque_login,name="resque_login"),
     path('admin/', admin.site.urls),
     
    

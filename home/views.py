@@ -17,3 +17,5 @@ def parent_sign(request):
     return render(request,'parent_sign.html')
 def resque_sign(request):
     return render(request,'resque_sign.html')
+def resque_login(request):
+    return render(request,'resque_login.html')
