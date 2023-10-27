@@ -28,6 +28,8 @@ urlpatterns = [
      path('parent_login/',parent_login,name="parent_login"),
      path('resque_sign/',resque_sign,name="resque_sign"),
      path('resque_login/',resque_login,name="resque_login"),
+     path('resque_dash/', resque_dash, name='resque_dash'),
+
      path('admin/', admin.site.urls),
     
    

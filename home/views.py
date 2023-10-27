@@ -1,10 +1,14 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
+from django.shortcuts import render, HttpResponse ,redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q
-from .models import User
-from .forms import UserRegistrationForm  # Import your UserRegistrationForm here
+from django.core.exceptions import ValidationError
+import os
+from .forms import UserRegistrationForm  
+# Import your UserRegistrationForm here
 
 def home(request):
     image_files = []  # Assuming this part works as expected
@@ -39,8 +43,9 @@ def resque_sign(request):
             if User.objects.filter(Q(username=username) | Q(email=email)).exists():
                 messages.error(request, "Username or email already exists")
             else:
+                # Create the user with the expected field names
                 my_user = User.objects.create_user(username=username, email=email, password=password)
-                my_user.full_name = full_name  # Set the user's full name
+                my_user.fullname = full_name  # Set the user's full name
                 my_user.save()
                 messages.success(request, "Your account has been successfully created")
                 return redirect('resque_login')
@@ -48,15 +53,16 @@ def resque_sign(request):
     # View logic for the signup page
     return render(request, 'resque_sign.html')
 
+
 def resque_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        password = request.POST.get('password')
+        password= request.POST.get('password')
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect('resque_dash')  # Assuming you want to redirect to 'resque_dash' on successful login
+            auth_login(request, user)
+            return redirect('resque_dash')
         else:
             messages.error(request, "Invalid username or password")
 
@@ -64,22 +70,8 @@ def resque_login(request):
     return render(request, 'resque_login.html')
 
 @login_required(login_url='resque_login')
-def resque_dash(request):
-    # View logic for the dashboard page
-    return render(request, 'resque_dash.html')
-
-def user_logout(request):
+def Logout(request):
     logout(request)
-    return redirect('index')  # Redirect to 'index' or any other page you prefer
-
-# Add your UserRegistrationForm logic here
-def signup(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the user data to the database
-            return redirect('resque_login')  # Redirect to a success page
-    else:
-        form = UserRegistrationForm()
-
-    return render(request, 'resque_sign.html', {'form': form})
+    return redirect('index')
+def resque_dash(request):
+    return render(request,'resque_dash.html')

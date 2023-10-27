@@ -10,13 +10,15 @@
 
   <body>
     <!-- component -->
-    <div class="bg-[#ecfdf5] min-h-screen flex flex-col">
-      <div
-        class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2"
-      >
-        <div class="bg-[#f0fdfa] px-6 py-8 rounded shadow-md text-black w-full">
-          <form method="post">
-            {% csrf_token %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="bg-[#ecfdf5] min-h-screen flex flex-col">
+        <div
+          class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2"
+        >
+          <div
+            class="bg-[#f0fdfa] px-6 py-8 rounded shadow-md text-black w-full"
+          >
             <h1 class="mb-8 text-3xl text-center">Sign In</h1>
 
             <input
@@ -56,19 +58,19 @@
                 Privacy Policy
               </a>
             </div>
-          </form>
-        </div>
+          </div>
 
-        <div class="text-grey-dark mt-6">
-          Don't have an account?
-          <a
-            class="no-underline border-b border-blue text-blue"
-            href="/resque_sign/"
-          >
-            Sign Up </a
-          >.
+          <div class="text-grey-dark mt-6">
+            Don't have an account?
+            <a
+              class="no-underline border-b border-blue text-blue"
+              href="/resque_sign/"
+            >
+              Sign Up </a
+            >.
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   </body>
 </html>
