@@ -133,19 +133,22 @@
         </div>
         <div class="form">
             <section class="max-w-4xl p-6 mx-auto bg-indigo-600 rounded-md shadow-md dark:bg-gray-800 mt-20">
-                <h1 class="text-xl font-bold text-white capitalize dark:text-white">Recipe Details</h1>
-                <form method="post" enctype="multipart/form-data">
+                <h1 class="text-xl font-bold text-white capitalize dark:text-white">Child Details</h1>
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
                         <div>
-                            <label class="text-white dark:text-gray-200" for="username">Recipe Name</label>
-                            <input required name="recipe_name" type='text' placeholder="Enter recipe name"
+                            <label class="text-white dark:text-gray-200" for="username">Child Name</label>
+                            <input  name="child_name" type='text' placeholder="Enter child name"
+                                class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
+                            <label class="text-white dark:text-gray-200" for="username">Age</label>
+                            <input  name="child_age" type="number"' placeholder="Enter child age"
                                 class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring">
                         </div>
             
                         <div>
                             <label class=" text-white dark:text-gray-200" for="passwordConfirmation">Description</label>
-                            <textarea required name="recipe_description" id="textarea" type="textarea"
+                            <textarea required name="location" id="textarea" type="textarea"
                                 class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"></textarea>
                         </div>
                         <div>
@@ -164,7 +167,7 @@
                                         <label for="file-upload"
                                             class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                             <span class="">Upload an image</span>
-                                            <input name="recipe_image" id="file-upload" name="file-upload" type="file"
+                                            <input name="child_image" id="file-upload" name="file-upload" type="file"
                                                 class="sr-only">
                                         </label>
                                         <p class="pl-1 text-white">or drag and drop</p>
@@ -182,6 +185,8 @@
                             class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-pink-500 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600">Save</button>
                     </div>
                 </form>
+                <label class=" text-white dark:text-gray-200" for="passwordConfirmation">Result</label>
+               <img  class="block w-55 px-4 py-2 mt-2 h-96  text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" src="{{match}}" alt="">
             </section>
         </div>
     </div>
