@@ -24,6 +24,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
      path('',home,name="home"),
+   
      path('parent_sign/',parent_sign,name="parent_sign"),
      path('parent_login/',parent_login,name="parent_login"),
      path('resque_sign/',resque_sign,name="resque_sign"),
