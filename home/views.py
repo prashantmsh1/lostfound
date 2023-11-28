@@ -26,29 +26,30 @@ def childdata(request):
     child_image=request.FILES.get('child_image')
     child_height=data.get('child_height')
     birth_mark=data.get('birth_mark')
-    
+
     Child.objects.create(child_name=child_name,
                          child_age=child_age,
                          location=location,
                          child_image=child_image,
                          child_height=child_height,
                          birth_mark=birth_mark)
-    
-    
+
+
     with open("known_faces_dict.pkl", "rb") as file:
         known_faces_dict = pickle.load(file)
-
+    print(child_image)
     # known_faces = know_faces_dict["known_faces"]
     # known_images = know_faces_dict["known_images"]
-    
-    unknown_image_path = "1.jpg"
+
+    unknown_image_path = f'static/child_image/{str(child_image)}'
+    print(unknown_image_path)
     # unknown_face_encodings = face_recognition.face_encodings(unknown_image)
     if os.path.exists(unknown_image_path):
         # unknown_face_encoding = unknown_face_encodings[0]
         unknown_image = face_recognition.load_image_file(unknown_image_path)
         unknown_face_encodings = face_recognition.face_encodings(unknown_image)
 
-        
+
         if len(unknown_face_encodings) > 0:
             unknown_face_encoding = unknown_face_encodings[0]
 
@@ -67,7 +68,7 @@ def childdata(request):
                 matched_image_path = os.path.join("", known_name + os.path.splitext(unknown_image_path)[1])
                 matched_image = Image.open(matched_image_path)
                 matched_image.show()
-                destination_path = 'static/matched/matched_image.jpg'
+                destination_path = f'static/matched/{str(child_image)}'
                 matched_image.save(destination_path)
                 print(destination_path)
                 break
@@ -77,6 +78,7 @@ def childdata(request):
                 return ("")
     else:
         print("No face found in the unknown image")
+        return ("")
     return (destination_path)
     
 def lostchild(request):
@@ -265,7 +267,7 @@ def resque_dash(request):
         path[0] = "media"
         match="/"+"/".join(path)
         print(match)
-        
+    print(match)
     print(Child.objects.all())
     import os
 
@@ -276,12 +278,13 @@ def resque_dash(request):
     static_child_image_files = os.listdir(static_child_image_folder_path)
 
 # Iterate over the files and delete them
-    for file in static_child_image_files:
-        os.remove(os.path.join(static_child_image_folder_path, file))
+    # for file in static_child_image_files:
+        # os.remove(os.path.join(static_child_image_folder_path, file))
 
 
         
-        
+    if(match=="/media"):
+        return render(request,'resque_dash.html' ,{'match':'/media/rimage/noimage.png','found':"Match Not Found"})
     return render(request,'resque_dash.html',{'match':match,'found':"Match Found"})
 
 def parent_dash(request):
