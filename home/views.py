@@ -3,10 +3,12 @@ from django.forms import ImageField
 from django.http import HttpResponse
 from django.shortcuts import render
 import os
+from django.conf import settings
 from django.shortcuts import redirect
 from .models import *
 import pickle
 import face_recognition 
+import time
 from PIL import Image
 import os
 from django.contrib.auth.models import User
@@ -14,11 +16,13 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 
 # Create your views here.
-from PIL import Image
-from django.core.files.storage import default_storage
 
-def childdata(request):
+from django.core.files.storage import default_storage
+with open('known_faces_dict.pkl', 'rb') as file:
+        known_faces_dict = pickle.load(file)
     
+def childdata(request):
+   
     data=request.POST
     child_name=data.get('child_name')
     child_age=data.get('child_age')
@@ -34,21 +38,23 @@ def childdata(request):
                          child_height=child_height,
                          birth_mark=birth_mark)
 
-
-    with open("known_faces_dict.pkl", "rb") as file:
-        known_faces_dict = pickle.load(file)
+    
     print(child_image)
+    print(known_faces_dict)
+  
     # known_faces = know_faces_dict["known_faces"]
     # known_images = know_faces_dict["known_images"]
 
-    unknown_image_path = f'static/child_image/{str(child_image)}'
+    unknown_image_path = "static/child_image/"+str(child_image)
+    
+    # unknown_image_path=os.path.join(settings.STATIC_URL,'child_image',str(child_image))
     print(unknown_image_path)
     # unknown_face_encodings = face_recognition.face_encodings(unknown_image)
     if os.path.exists(unknown_image_path):
         # unknown_face_encoding = unknown_face_encodings[0]
         unknown_image = face_recognition.load_image_file(unknown_image_path)
         unknown_face_encodings = face_recognition.face_encodings(unknown_image)
-
+        print("path ran")
 
         if len(unknown_face_encodings) > 0:
             unknown_face_encoding = unknown_face_encodings[0]
@@ -59,23 +65,27 @@ def childdata(request):
         for known_name, known_face_encoding in known_faces_dict.items():
             # Compare the unknown face to the known faces
             result = face_recognition.compare_faces([known_face_encoding], unknown_face_encoding, tolerance=tolerance)
-
+            print("this ran")
+            print(result)
             if result[0]:
                 print(f"Successful match found: {known_name}")
                 match_found = True
 
                 # Display the matched image
-                matched_image_path = os.path.join("", known_name + os.path.splitext(unknown_image_path)[1])
+                matched_image_path = os.path.join("static/child_image", known_name + os.path.splitext(unknown_image_path)[1])
+                print(known_name)
+                print(matched_image_path)
                 matched_image = Image.open(matched_image_path)
                 matched_image.show()
                 destination_path = f'static/matched/{str(child_image)}'
                 matched_image.save(destination_path)
                 print(destination_path)
+                
                 break
 
             if not match_found:
                 print("No match found")
-                return ("")
+                
     else:
         print("No face found in the unknown image")
         return ("")
@@ -268,7 +278,7 @@ def resque_dash(request):
         match="/"+"/".join(path)
         print(match)
     print(match)
-    print(Child.objects.all())
+    # print(Child.objects.all())
     import os
 
 # Get the full path to the static/child_image folder
@@ -283,9 +293,10 @@ def resque_dash(request):
 
 
         
-    if(match=="/media"):
-        return render(request,'resque_dash.html' ,{'match':'/media/rimage/noimage.png','found':"Match Not Found"})
-    return render(request,'resque_dash.html',{'match':match,'found':"Match Found"})
+    if(match ==""):
+        return render(request,'resque_dash.html',{'match':'/media/rimage/noimage.png','found':"Match not Found"})
+    return render(request,'resque_dash.html' ,{'match':match,'found':"Match Found"})
+
 
 def parent_dash(request):
     match=""

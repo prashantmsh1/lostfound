@@ -8,8 +8,8 @@ with open('known_faces_dict.pkl', 'rb') as file:
     known_faces_dict = pickle.load(file)
 
 # Load an unknown face for testing
-unknown_image_path = "13.jpg"  # Change this to your unknown image path
-
+unknown_image_path = "static/child_image/11.jpg"  # Change this to your unknown image path
+print(unknown_image_path)
 if os.path.exists(unknown_image_path):
     unknown_image = face_recognition.load_image_file(unknown_image_path)
     unknown_face_encodings = face_recognition.face_encodings(unknown_image)
@@ -23,16 +23,16 @@ if os.path.exists(unknown_image_path):
         for known_name, known_face_encoding in known_faces_dict.items():
             # Compare the unknown face to the known faces
             result = face_recognition.compare_faces([known_face_encoding], unknown_face_encoding, tolerance=tolerance)
-
+            print(result)
             if result[0]:
                 print(f"Successful match found: {known_name}")
                 match_found = True
 
                 # Display the matched image
-                matched_image_path = os.path.join("photo", known_name + os.path.splitext(unknown_image_path)[1])
+                matched_image_path = os.path.join("static/child_image", known_name + os.path.splitext(unknown_image_path)[1])
+                print(matched_image_path)
                 matched_image = Image.open(matched_image_path)
                 matched_image.show()
-                
 
                 break
 
