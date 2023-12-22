@@ -8,18 +8,38 @@ from django.shortcuts import redirect
 from .models import *
 import pickle
 import face_recognition 
-import time
 from PIL import Image
 import os
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 # Create your views here.
 
 from django.core.files.storage import default_storage
 with open('known_faces_dict.pkl', 'rb') as file:
         known_faces_dict = pickle.load(file)
+    
+def send_email_with_attachment(subject, message, from_email, recipient_list, attachment):
+    email = EmailMessage(subject, message, from_email, recipient_list)
+    email.attach_file(attachment)
+    email.send()
+def sendmail(dict,destination_path):
+    
+    subject = f" Good News! We've Found Your Child - {dict['child_name']}"
+    message = f"""Dear Sanjana,
+    
+    We hope this message finds you in good health. We are reaching out to share some heartening news - we have successfully located your missing child, {dict['child_name']}.She also has a birthmark on her {dict['birth_mark']} .
+    
+    Location:{dict['location']} 
+    Thank You
+    Team KHOJ
+    """
+# Define recipient email address
+    recipient_list = ["prashantkr.msh@gmail.com","sanjanancr@gmail.com"]
+    send_email_with_attachment(subject, message,"pm18386@gmail.com",  recipient_list, destination_path)
+    
     
 def childdata(request):
    
@@ -41,7 +61,14 @@ def childdata(request):
     
     print(child_image)
     print(known_faces_dict)
-  
+    dict={
+        "child_name":child_name,
+        "child_age":child_age,
+        "location":location,
+        "child_image":child_image,
+        "child_height":child_height,
+        "birth_mark":birth_mark
+    }
     # known_faces = know_faces_dict["known_faces"]
     # known_images = know_faces_dict["known_images"]
 
@@ -76,11 +103,12 @@ def childdata(request):
                 print(known_name)
                 print(matched_image_path)
                 matched_image = Image.open(matched_image_path)
-                matched_image.show()
+                # matched_image.show()
                 destination_path = f'static/matched/{str(child_image)}'
                 matched_image.save(destination_path)
                 print(destination_path)
-                
+                if(match_found):
+                    sendmail(dict,destination_path)
                 break
 
             if not match_found:
@@ -89,7 +117,7 @@ def childdata(request):
     else:
         print("No face found in the unknown image")
         return ("")
-    return (destination_path)
+    return ('')
     
 def lostchild(request):
     
@@ -295,7 +323,7 @@ def resque_dash(request):
         
     if(match ==""):
         return render(request,'resque_dash.html',{'match':'/media/rimage/noimage.png','found':"Match not Found"})
-    return render(request,'resque_dash.html' ,{'match':match,'found':"Match Found"})
+    return render(request,'resque_dash.html' ,{'match':match,'found':"Match not Found"})
 
 
 def parent_dash(request):
